@@ -1,0 +1,18 @@
+{
+  "name": "arc42-framework-skill",
+  "version": "0.1.0",
+  "description": "arc42-spec: 把功能 / 变更 / 重构 / 集成 / 迁移需求转写为符合 arc42 12 章框架的中文技术方案文档。契约式协议,逐章 MANDATORY / FORBIDDEN / EXIT 校验,跨章一致性断言。",
+  "author": {
+    "name": "nanzhipro",
+    "email": "deer_hope@live.cn"
+  },
+  "keywords": [
+    "arc42",
+    "spec",
+    "architecture",
+    "tech-spec",
+    "chinese",
+    "rfc",
+    "design-doc"
+  ]
+}
