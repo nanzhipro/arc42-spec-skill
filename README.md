@@ -10,6 +10,8 @@
 
 ## 目录
 
+- [为什么需要这个 Skill](#为什么需要这个-skill)
+- [为什么选择 arc42](#为什么选择-arc42)
 - [项目定位](#项目定位)
 - [架构分层](#架构分层)
 - [安装](#安装)
@@ -20,12 +22,63 @@
 
 ---
 
+## 为什么需要这个 Skill
+
+**AI 写代码已经够快了，瓶颈不在编码，在"我们到底要让它做什么"没说清楚。**
+
+把同一段需求扔给 AI 三次，会得到三份看似都对、但目标、边界、取舍各不相同的实现 —— 因为自然语言需求里**目标、约束、决策、风险是混在一起的**，AI 每次会自动脑补一组缺失项。代码越写越快，重写、回滚、争论、返工反而越来越多。
+
+真正的成本从来不是"敲键盘"，而是：
+
+- **沟通成本**：评审者读不懂方案，每次会都从"你这个为什么这么做"重新讲起。
+- **决策遗失成本**：三个月后没人记得当初为什么选 A 不选 B，于是又选回了 B。
+- **返工成本**：实现到一半才发现性能目标、安全约束、部署边界没人定义过。
+- **接手成本**：新人只能读代码反推意图，把"代码就是文档"这句话变成长期复利的债。
+
+这个 skill 的目标不是"让 AI 多写一份文档"，而是把上述成本**前置到一份结构化的契约里**：
+
+- **AI 不再凭印象写散文**：每一章都要从代码 / 配置 / commit 里取证，缺失就显式 `> TODO(...)`，绝不脑补。
+- **方案与实现解耦**：先固定目标—边界—结构—决策—风险，再让另一个 AI（或人）按图施工。同一份 spec，多个实现可比。
+- **评审从开盲盒变成开门禁**：12 章每章有 MANDATORY / FORBIDDEN / EXIT，跨章有 A1–A6 一致性断言；过不了门禁不是"再改改"，是显式回退。
+- **决策可追溯**：每个关键选择都落在第 9 章 ADR，三个月后回头能看到"为什么"，而不是只看到"是什么"。
+
+> 一句话：**把 AI 编码时代的真正瓶颈 —— 需求到结构化契约的转写 —— 自动化掉**。
+
+---
+
+## 为什么选择 arc42
+
+市面上的"写技术方案"模板很多，为什么是 [arc42](https://arc42.org/)？
+
+arc42 是 Peter Hruschka 与 Gernot Starke 在 2005 年提出、至今 20 年的开源架构沟通模板，被 iSAQB（国际软件架构资格委员会）采用为 CPSA 认证教材，已用于从嵌入式系统到数据平台、从初创团队到大型企业的成千上万个真实项目。它解决的是一个比"写好看"更基础的问题：
+
+> **一份架构文档应该稳定表达哪些信息，才能让相关方理解、评审、实现、演进和接手一个系统？**
+
+arc42 给出的答案是 **12 类信息的固定位置**：目标、约束、上下文、策略、构建块、运行时、部署、横切概念、决策、质量、风险、术语。这套结构有四个其它模板替代不了的特性：
+
+| 特性 | 含义 | 为什么重要 |
+| --- | --- | --- |
+| **技术中立** | 不绑定语言、平台、架构风格、图形记法 | 同一套结构能写后端、前端、嵌入式、数据平台、AI 应用、基础设施 |
+| **流程中立** | 不绑定瀑布、敏捷、Scrum、看板 | 不需要团队先改流程才能用 |
+| **可裁剪** | 官方明确支持 lean / thorough 两端 | 小变更只写关键章，关键系统可以做到审计级深度，**结构不变，深度可变** |
+| **多视图分离** | 静态结构（5）/ 运行时（6）/ 部署（7）三视图独立 | 强迫表达者把"长什么样、怎么动、跑在哪"分开想，避免一张图糊一切 |
+
+更关键的是 arc42 内嵌了三条**反直觉但被验证有效**的原则：
+
+1. **质量目标先于结构**：第 1 章先定 3–5 个质量目标，第 10 章用质量场景验证。结构不是凭审美选的，是凭目标推出来的 —— 这把"架构师审美之争"变成"目标对不对"之争。
+2. **决策即资产**：第 9 章用 ADR 记录每一个重要、昂贵、不可逆的决策及其 rationale。不是"我们选了 X"，而是"在 Y 约束下、为达成 Z 目标、对比 A/B/C 后选了 X"。决策本身就是可继承的组织知识。
+3. **风险与技术债是首等公民**：第 11 章强制存在。承认"已知问题"不是示弱，是把团队下一次踩坑前置成一行字 —— 这比所有事后复盘都便宜。
+
+> 一句话：**arc42 不是模板，是把"什么样的架构表达才不丢信息"沉淀成 20 年实战的协议**。本仓库做的事，是把这份协议翻译成 AI 可以一次跑通的契约式 skill。
+
+---
+
 ## 项目定位
 
-一份合格的技术方案应当回答 **目标 / 边界 / 结构 / 流程 / 部署 / 质量 / 决策 / 风险** 八类问题。本仓库提供：
+本仓库提供三层产物，对应三种使用场景：
 
-1. **arc42 12 章框架**的通用规约 —— 回答“架构表达应该有哪些稳定位置”。
-2. **契约式 skill** —— 让 AI 不再凭印象写散文，而是按 Phase / MANDATORY / FORBIDDEN / EXIT 门禁逐章生成。
+1. **arc42 12 章框架**的通用规约 —— 回答"架构表达应该有哪些稳定位置"。
+2. **契约式 skill** —— 让 AI 按 Phase / MANDATORY / FORBIDDEN / EXIT 门禁逐章生成，不再凭印象写散文。
 3. **可参照的样例文档** —— 验证 skill 在真实变更类型上的产出形态。
 
 > 本仓库不是写作风格指南，是**协议**：每一章有可校验的退出条件，跨章有一致性断言，失败有显式回退。
@@ -56,73 +109,37 @@
 
 ## 安装
 
-按使用环境三选一。所有方式安装的都是同一个 [`skills/arc42-spec/`](skills/arc42-spec/) 目录。
+使用 [`npx skills add`](https://www.npmjs.com/package/skills) 从本仓库安装或更新 skill。
 
-### 方式 A：`npx` 一键拉取（推荐试用）
-
-用 [`degit`](https://github.com/Rich-Harris/degit) 把 skill 目录抓到 Agent 的 skill 加载路径，无需 clone 整个仓库、无 git 历史包袱。
+### 安装
 
 ```bash
-# Claude Code（用户级 skill）
-npx -y degit cyberserval/arc42-framework-skill/skills/arc42-spec \
-  ~/.claude/skills/arc42-spec
+# 用户级（在所有项目可用）
+npx -y skills add nanzhipro/arc42-spec-skill
 
-# 通用 Agent skill 目录（Codex / 自建 Agent）
-npx -y degit cyberserval/arc42-framework-skill/skills/arc42-spec \
-  ~/.agents/skills/arc42-spec
-
-# 项目级 skill（仅当前仓库可用）
-npx -y degit cyberserval/arc42-framework-skill/skills/arc42-spec \
-  .claude/skills/arc42-spec
+# 项目级（仅当前仓库可用）
+npx -y skills add nanzhipro/arc42-spec-skill --project
 ```
 
-升级：重跑同一条命令并加 `--force`。
+### 更新到最新版本
 
 ```bash
-npx -y degit --force cyberserval/arc42-framework-skill/skills/arc42-spec \
-  ~/.claude/skills/arc42-spec
+npx -y skills add nanzhipro/arc42-spec-skill --force
 ```
-
-### 方式 B：Claude Code Plugin / Marketplace
-
-把仓库注册为 Claude Code 的 plugin marketplace，再通过 `/plugin` 安装、升级、卸载。
-
-```text
-# 在 Claude Code 里依次执行
-/plugin marketplace add cyberserval/arc42-framework-skill
-/plugin install arc42-spec
-```
-
-常用管理命令：
-
-| 操作 | 命令 |
-| --- | --- |
-| 查看已装插件 | `/plugin list` |
-| 升级到最新版 | `/plugin update arc42-spec` |
-| 卸载 | `/plugin uninstall arc42-spec` |
-| 移除 marketplace | `/plugin marketplace remove cyberserval/arc42-framework-skill` |
 
 > 启用后在任意会话直接说“写技术方案 / 出 arc42 / 写 spec”即可触发；无需手动 `/load`。
 
-### 方式 C：手动 clone 或 symlink（开发者）
+### 手动 clone（开发者）
 
 适合需要本地修改 skill 协议或参与贡献。
 
 ```bash
-git clone https://github.com/cyberserval/arc42-framework-skill.git
-cd arc42-framework-skill
+git clone https://github.com/nanzhipro/arc42-spec-skill.git
+cd arc42-spec-skill
 
 # 软链到任一 Agent 的 skill 目录
 ln -s "$PWD/skills/arc42-spec" ~/.claude/skills/arc42-spec
 ```
-
-### 安装位置一览
-
-| Agent | 用户级路径 | 项目级路径 |
-| --- | --- | --- |
-| Claude Code | `~/.claude/skills/arc42-spec/` | `.claude/skills/arc42-spec/` |
-| 通用 Agent / Codex | `~/.agents/skills/arc42-spec/` | `.agents/skills/arc42-spec/` |
-| GitHub Copilot Chat | 在仓库 `.github/copilot-instructions.md` 中引用 `SKILL.md` | — |
 
 > 验证安装成功：在 Agent 中说“列出可用的 skill”或直接发起“为 X 写技术方案”，Agent 应能加载 `arc42-spec`。
 
